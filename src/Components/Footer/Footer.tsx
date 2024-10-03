@@ -17,6 +17,7 @@ const Footer = () => {
                   src={
                     "https://goodtravel.guide/wp-content/uploads/2020/01/LOGO-Good-Travel-Guide.png"
                   }
+                  className="w-[160px] md:w-[130px]"
                   alt="logo"
                 />
               </div>

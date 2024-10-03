@@ -5,11 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment } from "react";
-import { CiSettings } from "react-icons/ci";
 import { FiUser } from "react-icons/fi";
-import { IoCreateOutline, IoLogInOutline } from "react-icons/io5";
+import { IoCreateOutline } from "react-icons/io5";
 import { MdOutlineDashboardCustomize, MdPostAdd } from "react-icons/md";
-import { PiBookmarksLight, PiUserCircleFill } from "react-icons/pi";
 import { TbLogin } from "react-icons/tb";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -52,23 +50,9 @@ const Dropdown = () => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 mt-2 min-w-[270px] max-w-[300px] origin-top-right divide-y divide-gray-100 z-50 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-          <div
-            className="py-1 border-b border-gray-200 dark:border-gray-600"
-            role="none"
-          >
-            <p className="px-4 pt-2 font-normal text-gray-500 dark:text-gray-500">
-              Signed in as:
-            </p>
-            <a className="flex px-3 py-2 text-sm items-center font-semibold text-gray-700 border-l-2 border-transparent hover:border-primary  hover:text-primary ">
-              <span className="mr-2">
-                <PiUserCircleFill className="text-lg" />
-              </span>
-              {user ? user?.email : "unknown user"}
-            </a>
-          </div>
+        <Menu.Items className="absolute right-0 mt-2 min-w-[250px] max-w-[250px] origin-top-right divide-y divide-gray-100 z-50 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
           {user ? (
-            <>
+            <div className="max-h-[90vh] overflow-y-auto pt-4">
               <Link
                 href={"/create-post"}
                 className="flex lg:hidden items-center cursor-pointer px-4 py-2 text-sm text-gray-700 border-l-2 border-transparent  hover:border-primary  hover:text-primary"
@@ -86,24 +70,11 @@ const Dropdown = () => {
                 Profile
               </a>
 
-              <a className="flex px-[14px] cursor-pointer py-2 text-sm text-gray-700 border-l-2 border-transparent  hover:border-primary  hover:text-primary">
-                <span className="mr-1">
-                  <PiBookmarksLight className="text-lg" />
-                </span>
-                Library
-              </a>
-              <a className="flex px-[14px] cursor-pointer py-2 text-sm text-gray-700 border-l-2 border-transparent  hover:border-primary  hover:text-primary">
+              <a className="flex px-4 cursor-pointer py-2 text-sm text-gray-700 border-l-2 border-transparent  hover:border-primary  hover:text-primary">
                 <span className="mr-1">
                   <MdPostAdd className="text-lg" />
                 </span>
                 Stories
-              </a>
-
-              <a className="flex px-[14px] cursor-pointer py-2 text-sm text-gray-700 border-l-2 border-transparent  hover:border-primary  hover:text-primary">
-                <span className="mr-1">
-                  <CiSettings className="text-lg" />
-                </span>
-                Settings
               </a>
 
               <Link
@@ -115,19 +86,40 @@ const Dropdown = () => {
                 </span>
                 Dashboard
               </Link>
-
+              <hr className="my-3" />
+              <a className="flex px-4 py-1 cursor-pointer text-sm text-gray-700  hover:text-primary">
+                Settings
+              </a>
+              <Link
+                href="/about-us"
+                className="flex px-4 py-1 cursor-pointer text-sm text-gray-700  hover:text-primary"
+              >
+                About Us
+              </Link>
+              <Link
+                href="/contact-us"
+                className="flex px-4 py-1 cursor-pointer text-sm text-gray-700  hover:text-primary"
+              >
+                Contact Us
+              </Link>
+              <hr className="my-3" />
               <button
                 onClick={handleLogout}
-                className="flex px-[12px]  py-2 text-sm text-gray-700 border-l-2 border-transparent  rounded-bl-md hover:border-primary  hover:text-primary"
+                className="px-4 py-2 text-left text-sm text-gray-700 hover:text-primary"
               >
-                <span className="mr-2">
-                  <IoLogInOutline className="text-[16px]" />
-                </span>
-                Logout
+                <p>Sign Out</p>
+                <div className="flex items-center">
+                  <p>
+                    {user &&
+                      user?.email.split("@")[0].slice(0, 2) +
+                        "*".repeat(user?.email.split("@")[0].length - 2)}
+                  </p>
+                  <p>@{user && user?.email.split("@")[1]}</p>
+                </div>
               </button>
-            </>
+            </div>
           ) : (
-            <Link href={"/login"}>
+            <Link href={"/sign-in"}>
               <button className="flex px-4 py-2 text-sm text-gray-700 border-l-2 border-transparent  rounded-bl-md hover:border-primary  hover:text-primary">
                 <span className="mr-2">
                   <TbLogin className="text-[15px]" />

@@ -2,9 +2,10 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import toast from "react-hot-toast";
 import { logout, setUser } from "../features/auth/authSlice";
 import { RootState } from "../features/store";
-// const NEXT_PUBLIC_BASE_API = "https://travel-guide-community-server.vercel.app/api/v1"
+const NEXT_PUBLIC_BASE_API =
+  "https://travel-guide-community-server.vercel.app/api/v1";
 const baseQuery = fetchBaseQuery({
-  baseUrl: process.env.NEXT_PUBLIC_BASE_API,
+  baseUrl: NEXT_PUBLIC_BASE_API,
 
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
@@ -34,13 +35,10 @@ const baseQueryWithRefreshToken = async (
   if (result?.error?.status === 401) {
     //* Send Refresh
 
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_API}/auth/refresh-token`,
-      {
-        method: "POST",
-        credentials: "include",
-      }
-    );
+    const res = await fetch(`${NEXT_PUBLIC_BASE_API}/auth/refresh-token`, {
+      method: "POST",
+      credentials: "include",
+    });
 
     const data = await res.json();
 

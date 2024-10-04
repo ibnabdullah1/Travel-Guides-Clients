@@ -70,12 +70,15 @@ const Dropdown = () => {
                 Profile
               </a>
 
-              <a className="flex px-4 cursor-pointer py-2 text-sm text-gray-700 border-l-2 border-transparent  hover:border-primary  hover:text-primary">
+              <Link
+                href={"/my-stories"}
+                className="flex px-4 cursor-pointer py-2 text-sm text-gray-700 border-l-2 border-transparent  hover:border-primary  hover:text-primary"
+              >
                 <span className="mr-1">
                   <MdPostAdd className="text-lg" />
                 </span>
                 Stories
-              </a>
+              </Link>
 
               <Link
                 href="/dashboard"

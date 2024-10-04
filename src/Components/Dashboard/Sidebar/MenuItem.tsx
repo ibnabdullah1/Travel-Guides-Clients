@@ -6,10 +6,10 @@ const MenuItem = ({ label, address, icon: Icon }: any) => {
   const isPathname = pathname === address;
 
   return (
-    <div className="px-3 mb-4">
+    <div className="mb-4">
       <Link
         href={address}
-        className={`flex items-center gap-2 px-4 py-[6px]  rounded-full  transition-colors duration-300 transform     ${
+        className={`flex items-center gap-2 px-4 py-[6px]  transition-colors duration-300 transform     ${
           isPathname
             ? "bg-primary text-[#ffffff]"
             : "text-[#2d2c2c] hover:bg-[rgb(105,182,76,0.3)] hover:text-primary "

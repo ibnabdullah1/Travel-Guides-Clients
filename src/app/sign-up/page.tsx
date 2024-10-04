@@ -1,8 +1,9 @@
 "use client";
-import { useLoginMutation } from "@/src/redux/features/auth/authApi";
+import { useRegisterMutation } from "@/src/redux/features/auth/authApi";
 import { imageUpload } from "@/src/utils/utils";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { TbFidgetSpinner } from "react-icons/tb";
@@ -12,17 +13,9 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [countdown, setCountdown] = useState(0);
   const [email, setEmail] = useState("");
-  const [login] = useLoginMutation();
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (countdown > 0) {
-      timer = setInterval(() => setCountdown((prev) => prev - 1), 1000);
-    }
-    return () => clearInterval(timer);
-  }, [countdown]);
+  const [register] = useRegisterMutation();
+  const router = useRouter();
 
   const handleRegister = async (e: any) => {
     e.preventDefault();
@@ -36,23 +29,26 @@ const Register = () => {
     setEmailError("");
 
     try {
-      const imageData = await imageUpload(image);
-      const photoUrl = imageData?.data?.display_url;
+      const { data } = await imageUpload(image);
+      const photoUrl = data?.display_url;
 
       const userInfo = {
         name,
         email,
-        role: "user",
+        role: "USER",
         password,
         isDeleted: false,
-        photo: photoUrl,
-        follower: 0,
-        following: 0,
+        mobileNumber: "1234567890",
+        profilePhoto: photoUrl,
+        isPremium: false,
+        follower: [],
+        following: [],
       };
-      const res: any = await login(userInfo);
+      const res: any = await register(userInfo).unwrap();
       if (res.success) {
-        toast.success(res.data.message);
+        toast.success(res.message);
         form.reset();
+        router.push("/sign-in");
         setLoading(false);
       }
     } catch (error: any) {
@@ -70,7 +66,7 @@ const Register = () => {
         <div className="mb-8 text-center">
           <h1 className="my-3 text-2xl text-gray-800 font-bold">Sign Up</h1>
           <p className="text-xl font-semibold text-gray-600">
-            Welcome to <span className="text-primary">Eco-Pharmify</span>
+            Welcome to <span className="text-primary">Travel Guide</span>
           </p>
         </div>
         <form
@@ -155,7 +151,7 @@ const Register = () => {
           <div>
             <button
               type="submit"
-              className="bg-primary w-full rounded-md transform font-semibold duration-100 hover:bg-[rgb(20,184,166,0.8)] py-3 text-white"
+              className="bg-primary w-full rounded-md transform font-semibold duration-100 hover:bg-[rgb(105,182,76,0.8)] py-3 text-white"
             >
               {loading ? (
                 <TbFidgetSpinner className="animate-spin m-auto" />
@@ -171,7 +167,7 @@ const Register = () => {
           <p className="px-6 mt-3 text-sm text-center text-gray-400">
             Don’t have an account?
             <Link
-              href="/login"
+              href="/sign-in"
               className="hover:underline font-semibold hover:text-primary text-primary"
             >
               Sign In

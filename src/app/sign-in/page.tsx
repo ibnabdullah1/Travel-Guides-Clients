@@ -104,7 +104,7 @@ const Login = () => {
             <div>
               <button
                 type="submit"
-                className="bg-primary w-full rounded-md transform font-semibold duration-100 hover:bg-[rgb(20,184,166,0.8)] py-3 text-white"
+                className="bg-primary w-full rounded-md transform font-semibold duration-100 hover:bg-[rgb(105,182,76,0.8)] py-3 text-white"
                 disabled={loading}
               >
                 {loading ? (

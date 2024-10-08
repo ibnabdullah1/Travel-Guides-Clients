@@ -3,10 +3,14 @@ import { baseApi } from "../../api/baseApi";
 const userApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getUser: builder.query({
-      query: (email) => ({
-        url: `/users/${email}`,
-        method: "GET",
-      }),
+      query: (id) => {
+        console.log(id);
+        return {
+          url: `/users/${id}`,
+          method: "GET",
+        };
+      },
+      providesTags: ["singleUser"],
     }),
     getAllUsers: builder.query({
       query: () => {
@@ -47,6 +51,16 @@ const userApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["users"],
     }),
+    verifiedProfile: builder.mutation({
+      query: (data) => {
+        return {
+          url: `profile/verified`,
+          method: "PUT",
+          body: data,
+        };
+      },
+      invalidatesTags: ["users", "singleUser"],
+    }),
     deleteUser: builder.mutation({
       query: (id) => {
         return {
@@ -55,6 +69,16 @@ const userApi = baseApi.injectEndpoints({
         };
       },
       invalidatesTags: ["users"],
+    }),
+    profileVerifiedPayment: builder.mutation({
+      query: (price) => {
+        return {
+          url: "/create-payment-intent",
+          method: "POST",
+          body: price,
+        };
+      },
+      invalidatesTags: ["users", "singleUser"],
     }),
   }),
 });
@@ -66,4 +90,6 @@ export const {
   useAddFollowMutation,
   useDeleteUserMutation,
   useUpdateProfileMutation,
+  useVerifiedProfileMutation,
+  useProfileVerifiedPaymentMutation,
 } = userApi;

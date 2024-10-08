@@ -6,7 +6,7 @@ import { RootState } from "../features/store";
 //   "https://travel-guide-community-server.vercel.app/api/v1";
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_BASE_API,
-
+  // baseUrl: NEXT_PUBLIC_BASE_API,
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;
@@ -67,6 +67,6 @@ const baseQueryWithRefreshToken = async (
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithRefreshToken,
-  tagTypes: ["users", "posts", "singlePost"],
+  tagTypes: ["users", "posts", "singlePost", "singleUser"],
   endpoints: () => ({}),
 });

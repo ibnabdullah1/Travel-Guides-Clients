@@ -12,6 +12,7 @@ export type TUser = {
   profileUrl: string;
   email: string;
   role: string;
+  isPremium: boolean;
   iat: number;
   exp: number;
 };
@@ -39,10 +40,16 @@ const authSlice = createSlice({
         state.user.profileUrl = action.payload;
       }
     },
+    setPremium: (state, action) => {
+      if (state.user) {
+        console.log(action.payload);
+        state.user.isPremium = action.payload;
+      }
+    },
   },
 });
 
-export const { setUser, logout, setProfile } = authSlice.actions;
+export const { setUser, logout, setProfile, setPremium } = authSlice.actions;
 export default authSlice.reducer;
 
 export const useCurrentToken = (state: RootState) => state.auth.token;

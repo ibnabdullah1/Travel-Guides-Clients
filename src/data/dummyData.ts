@@ -325,3 +325,5 @@ export const shareSocialUrl = {
   twitter: "https://twitter.com/share?url=",
   linkedin: "https://www.linkedin.com/shareArticle?mini=true&url=",
 };
+export const VITE_Payment_Gateway_PK =
+  "pk_test_51OENiDC1pZIWKl2dyQZMu7IgHWIjFKOqUNS3eoMoLY7U7VohWXwnDVU7C3VrbOLOHT6qRLQmZqDKPRCkWHHO4Ru000AO98oaTu";

@@ -1,10 +1,10 @@
 "use client";
 import { categories } from "@/src/data/dummyData";
 import { selectCurrentUser } from "@/src/redux/features/auth/authSlice";
-import { useCreatePostMutation } from "@/src/redux/features/post/postApi";
-import { formatDate } from "@/src/utils/formatDate";
+import { useUpdatePostMutation } from "@/src/redux/features/post/postApi";
 import { imageUpload } from "@/src/utils/utils";
 import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { BsArrowLeft } from "react-icons/bs";
@@ -13,7 +13,7 @@ import { LuImagePlus } from "react-icons/lu";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import { useSelector } from "react-redux";
-import "./PostForm.css";
+import "./UpdatePostForm.css";
 const modules = {
   toolbar: [
     [{ font: [] }],
@@ -27,20 +27,23 @@ const modules = {
     ["clean"],
   ],
 };
-const PostForm = () => {
+const UpdatePostForm = ({ data: postData }: any) => {
+  const { postId } = useParams();
   const user = useSelector(selectCurrentUser);
-  const [CreatePost] = useCreatePostMutation();
+  const [updatePost] = useUpdatePostMutation();
   const [loading, setLoading] = useState(false);
-  const [value, setValue] = useState<string>("");
+  const [value, setValue] = useState<string>(postData?.content);
   const [imageFile, setImageFile] = useState<File>();
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] = useState<string>(postData?.category);
   const [isPremium, setIsPremium] = useState<boolean>(false);
-  const [image, setImage] = useState<string | null>(null);
-  const date = new Date();
+  const [imagePremium, setImagePremium] = useState<string | null>(
+    postData?.image
+  );
+  const router = useRouter();
   const handleImageChange = (e: any) => {
     const file = e.target.files?.[0];
     if (file) {
-      setImage(URL.createObjectURL(file));
+      setImagePremium(URL.createObjectURL(file));
       setImageFile(file);
     }
   };
@@ -48,34 +51,38 @@ const PostForm = () => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     setLoading(true);
+
     try {
-      const { data } = await imageUpload(imageFile);
-      const imageUrl = data?.display_url;
-      const postData = {
-        date: formatDate(date),
-        title: e.target.title.value,
-        subTitle: e.target.subTitle.value,
-        content: value,
-        image: imageUrl,
-        authorId: user!._id,
-        category: category,
-        likes: [],
-        dislikes: [],
-        status: isPremium ? "PREMIUM" : "FREE",
-        comments: [],
-        isDeleted: false,
+      let imageUrl = postData?.image;
+      if (imageFile) {
+        const { data } = await imageUpload(imageFile);
+        imageUrl = data?.display_url;
+      }
+
+      const updatePostData = {
+        id: postId,
+        data: {
+          title: e.target.title.value || postData.title,
+          image: imageUrl,
+          subTitle: e.target.subTitle.value || postData.subTitle,
+          content: value || postData.content,
+          category: category || postData.category,
+          status: isPremium ? "PREMIUM" : postData.status || "FREE",
+        },
       };
 
-      const res: any = await CreatePost(postData).unwrap();
+      const res: any = await updatePost(updatePostData).unwrap();
       if (res.success) {
         toast.success(res.message);
         setLoading(false);
-        setImage(null);
+        setImagePremium(null);
         e.target.reset();
         setValue("");
+        router.push(`/post/${postId}`);
         setCategory("");
       }
     } catch (error: any) {
+      console.log(error);
       toast.error(error.data?.message);
       setLoading(false);
     }
@@ -100,7 +107,7 @@ const PostForm = () => {
               type="submit"
               className="bg-[#24d53b] hover:bg-green-500 duration-150 text-white py-[6px] px-4 rounded-xl"
             >
-              {loading ? "Publishing..." : "Publish"}
+              {loading ? "Updating..." : "Update"}
             </button>
           </div>
         </div>
@@ -109,7 +116,7 @@ const PostForm = () => {
             type="text"
             name="title"
             id="title"
-            required
+            defaultValue={postData?.title}
             className="w-full placeholder:text-gray-400 border-none outline-none focus:ring-0 font-semibold tracking-wide placeholder:text-2xl text-2xl block font-roboto mb-2"
             placeholder="Article title"
           />
@@ -117,7 +124,7 @@ const PostForm = () => {
           <input
             type="text"
             name="subTitle"
-            required
+            defaultValue={postData?.subTitle}
             id="subTitle"
             className="w-full placeholder:text-gray-400 border-none outline-none focus:ring-0 font-roboto tracking-wide placeholder:text-base text-base block mb-2"
             placeholder="Add a subtitle"
@@ -127,7 +134,7 @@ const PostForm = () => {
             <label className="text-gray-500">Category:</label>
             <select
               value={category}
-              required
+              defaultValue={postData.category}
               onChange={(e) => setCategory(e.target.value)}
               className="w-fit px-3  py-2   focus:outline-none bg-white text-gray-500"
             >
@@ -168,14 +175,14 @@ const PostForm = () => {
               </label>
             </div>
           )}
-          {image && (
+          {imagePremium && (
             <div className="mb-4">
               <Image
                 width={1200}
                 height={200}
                 alt="post-image"
                 className="w-full h-[300px] object-cover rounded-md"
-                src={image}
+                src={imagePremium}
               />
             </div>
           )}
@@ -193,4 +200,4 @@ const PostForm = () => {
   );
 };
 
-export default PostForm;
+export default UpdatePostForm;

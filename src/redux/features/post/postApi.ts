@@ -3,17 +3,20 @@ import { baseApi } from "../../api/baseApi";
 const postApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     CreatePost: builder.mutation({
-      query: (productData) => ({
+      query: (postData) => ({
         url: "/posts",
         method: "POST",
-        body: productData,
+        body: postData,
       }),
     }),
+
     getAllPosts: builder.query({
-      query: () => ({
-        url: "/posts",
-        method: "GET",
-      }),
+      query: () => {
+        return {
+          url: "/posts",
+          method: "GET",
+        };
+      },
       providesTags: ["posts"],
     }),
     getSinglePost: builder.query({
@@ -36,13 +39,14 @@ const postApi = baseApi.injectEndpoints({
     }),
     updatePost: builder.mutation({
       query: ({ id, data }) => {
+        console.log(data);
         return {
           url: `/posts/${id}`,
           method: "PUT",
           body: data,
         };
       },
-      invalidatesTags: ["posts"],
+      invalidatesTags: ["posts", "singlePost"],
     }),
     addCommentToPost: builder.mutation({
       query: (data) => {

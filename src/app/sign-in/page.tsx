@@ -1,5 +1,4 @@
 "use client";
-import Loading from "@/src/Components/Common/Loading";
 import { useLoginMutation } from "@/src/redux/features/auth/authApi";
 import { setUser, TUser } from "@/src/redux/features/auth/authSlice";
 import { useAppDispatch } from "@/src/redux/features/hooks";
@@ -51,7 +50,6 @@ const Login = () => {
 
   return (
     <>
-      {loading && <Loading />}
       <div className="flex justify-center items-center py-20">
         <div
           style={{
@@ -117,9 +115,12 @@ const Login = () => {
           </form>
 
           <div className="space-y-1">
-            <button className="text-xs hover:underline hover:text-[#D1A054] text-gray-400">
+            <Link
+              href={"/forget-password"}
+              className="text-xs hover:underline hover:text-primary text-gray-400"
+            >
               Forgot password?
-            </button>
+            </Link>
           </div>
 
           <p className="px-6 mt-3 text-sm text-center text-gray-400">

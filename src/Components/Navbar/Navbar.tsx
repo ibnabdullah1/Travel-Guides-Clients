@@ -1,15 +1,22 @@
 "use client";
-
+import { setSearchTerm } from "@/src/redux/features/search/searchSlice";
+import { debounce } from "@/src/utils/debounce";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { ChangeEvent } from "react";
 import { IoCreateOutline, IoNotificationsOutline } from "react-icons/io5";
 import { LuSearch } from "react-icons/lu";
+import { useDispatch } from "react-redux";
 import Dropdown from "../Common/shared/MenuDropdown";
 
 const Navbar = () => {
   const pathname = usePathname();
-  console.log(pathname);
+  const dispatch = useDispatch();
+
+  const handleSearchChange = debounce((e: ChangeEvent<HTMLInputElement>) => {
+    dispatch(setSearchTerm(e.target.value));
+  }, 1000);
   return (
     <header className="max-w-7xl mx-auto flex justify-between items-center px-4 lg:px-8 py-3 lg:py-0 relative">
       <div className="flex items-center gap-3">
@@ -26,13 +33,13 @@ const Navbar = () => {
         </Link>
         <div className="hidden md:flex items-center bg-gray-50  rounded-full gap-2 px-4 py-3">
           <LuSearch className="text-gray-400 text-lg" />
-
           <input
             type="text"
-            name=""
-            id=""
+            name="search"
+            id="search"
             className="placeholder:text-base w-[200px] bg-gray-50 placeholder:text-slate-400 border-none outline-none focus:ring-0"
             placeholder="Search..."
+            onChange={handleSearchChange}
           />
         </div>
       </div>

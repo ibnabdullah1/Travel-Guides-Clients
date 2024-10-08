@@ -1,12 +1,12 @@
 "use client";
 import Loading from "@/src/Components/Common/Loading";
+import PaymentModal from "@/src/Components/Common/shared/PaymentModal";
 import {
   selectCurrentUser,
   setProfile,
 } from "@/src/redux/features/auth/authSlice";
 import { useAppDispatch } from "@/src/redux/features/hooks";
 import { useGetAllPostsQuery } from "@/src/redux/features/post/postApi";
-import { RootState } from "@/src/redux/features/store";
 import {
   useGetUserQuery,
   useUpdateProfileMutation,
@@ -14,14 +14,16 @@ import {
 import { imageUpload } from "@/src/utils/utils";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { IoCameraOutline } from "react-icons/io5";
+import { MdOutlineVerifiedUser, MdVerified } from "react-icons/md";
 import { useSelector } from "react-redux";
 
 const Profile = () => {
   const router = useRouter();
-  const user = useSelector((state: RootState) => selectCurrentUser(state));
+  const user = useSelector(selectCurrentUser);
+  const [isOpen, setIsOpen] = useState(false);
   const dispatch = useAppDispatch();
   const [updateProfile] = useUpdateProfileMutation();
   useEffect(() => {
@@ -33,17 +35,29 @@ const Profile = () => {
   const { data: userData, isLoading: isUserLoading } = useGetUserQuery(
     user?._id
   );
+
   const { data: postData, isLoading: isStoriesLoading } =
     useGetAllPostsQuery(undefined);
-  if (isUserLoading && isStoriesLoading) {
+
+  if (isUserLoading || isStoriesLoading) {
     return <Loading />;
   }
-  const posts = postData?.data?.filter(
-    (post: any) => post?.authorId?._id === user?._id
-  ).length;
 
+  const userPosts = postData?.data?.filter(
+    (post: any) => post?.authorId?._id === user?._id
+  );
+
+  const totalLike = userPosts?.reduce(
+    (total: number, post: any) => total + post?.likes?.length,
+    0
+  );
+  function closeModal() {
+    setIsOpen(false);
+  }
+  console.log(userData);
   const followers = userData?.data?.follower.length;
   const followings = userData?.data?.following.length;
+  const totalPost = userPosts?.length;
 
   const handleChangeProfile = async (e: any) => {
     e.preventDefault();
@@ -111,13 +125,26 @@ const Profile = () => {
           <h3 className="mb-1.5 text-xl text-center font-semibold text-blue-500 ">
             {user?.role}
           </h3>
-          <h3 className="mb-1.5 text-2xl text-center font-semibold text-secondary ">
-            {user?.name}
-          </h3>
+          <div className="flex justify-center items-center">
+            <div className="mb-1.5 text-2xl text-center font-semibold text-secondary flex items-center gap-2">
+              <h2> {user?.name}</h2>
+              {userData?.data?.isPremium && (
+                <MdVerified className="text-blue-500 text-lg" />
+              )}
+              {totalLike >= 1 && !userData?.data?.isPremium && (
+                <button
+                  onClick={() => setIsOpen(true)}
+                  className="flex items-center gap-1 w-fit border-2 rounded-full border-blue-500 text-blue-500  border-dashed px-3 py-[2px] text-xs"
+                >
+                  <MdOutlineVerifiedUser /> Verify Now
+                </button>
+              )}
+            </div>
+          </div>
 
           <div className="mx-auto mt-4.5 mb-5.5 grid max-w-94 grid-cols-3 rounded-md border border-stroke py-2.5 shadow-1">
             <div className="flex flex-col items-center justify-center gap-1 border-r border-stroke px-4  xsm:flex-row">
-              <span className="font-semibold text-secondary ">{posts}</span>
+              <span className="font-semibold text-secondary ">{totalPost}</span>
               <span className="text-sm">Posts</span>
             </div>
             <div className="flex flex-col items-center justify-center gap-1 border-r border-stroke px-4  xsm:flex-row">
@@ -298,7 +325,12 @@ const Profile = () => {
             </div>
           </div>
         </div>
-      </div>{" "}
+      </div>
+      <PaymentModal
+        closeModal={closeModal}
+        isOpen={isOpen}
+        totalLike={totalLike}
+      />
     </>
   );
 };

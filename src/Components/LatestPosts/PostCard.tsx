@@ -6,6 +6,7 @@ import Link from "next/link";
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
 import { CiBookmarkPlus, CiCircleMinus } from "react-icons/ci";
 import { FaComment } from "react-icons/fa6";
+import { MdVerified } from "react-icons/md";
 import { PiStarFourFill } from "react-icons/pi";
 import { useSelector } from "react-redux";
 import {
@@ -26,6 +27,8 @@ const PostCard = ({
   likes,
   dislikes,
   comments,
+  category,
+  status,
   date,
 }: any) => {
   const user = useSelector((state: RootState) => selectCurrentUser(state));
@@ -59,8 +62,22 @@ const PostCard = ({
             alt="author"
             className="size-6 rounded-full"
           />
-          <h3 className="text-sm text-secondary/90 hover:underline cursor-pointer">
-            {authorId?.name}
+          <h3 className="text-sm flex items-center gap-4 text-secondary/90 ">
+            <span className="hover:underline cursor-pointer flex items-center gap-1">
+              {" "}
+              {authorId?.name}
+              {authorId?.isPremium && (
+                <MdVerified className="text-blue-500 text-lg" />
+              )}
+            </span>
+            <span className="px-3 py-[2px] text-xs bg-primary/20 text-primary rounded-full">
+              {" "}
+              {category}
+            </span>
+            <span className="px-3 py-[2px] text-xs bg-green-500 text-white rounded-full">
+              {" "}
+              {status}
+            </span>
           </h3>
         </div>
         <Link href={`post/${_id}`}>

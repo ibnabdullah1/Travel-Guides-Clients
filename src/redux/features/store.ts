@@ -12,6 +12,7 @@ import {
 import storage from "redux-persist/lib/storage";
 import { baseApi } from "../api/baseApi";
 import authReducer from "./auth/authSlice";
+import searchReducer from "./search/searchSlice";
 
 const persistConfig = {
   key: "auth",
@@ -24,6 +25,7 @@ export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     auth: persistedAuthReducer,
+    search: searchReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

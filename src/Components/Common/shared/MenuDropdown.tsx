@@ -63,12 +63,15 @@ const Dropdown = () => {
                 </span>
                 Write
               </Link>
-              <a className="flex items-center cursor-pointer px-4 py-2 text-sm text-gray-700 border-l-2 border-transparent  hover:border-primary  hover:text-primary">
+              <Link
+                href={"/user-profile"}
+                className="flex items-center cursor-pointer px-4 py-2 text-sm text-gray-700 border-l-2 border-transparent  hover:border-primary  hover:text-primary"
+              >
                 <span className="mr-2">
                   <FiUser />
                 </span>
                 Profile
-              </a>
+              </Link>
 
               <Link
                 href={"/my-stories"}

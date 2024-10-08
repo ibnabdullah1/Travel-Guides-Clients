@@ -10,7 +10,8 @@ import { RootState } from "@/src/redux/features/store";
 import { useAddFollowMutation } from "@/src/redux/features/user/userApi";
 import html2pdf from "html2pdf.js";
 import Image from "next/image";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { AiFillDislike, AiFillLike } from "react-icons/ai";
 import { BsDot } from "react-icons/bs";
 import { CiBookmarkPlus, CiCircleMinus } from "react-icons/ci";
@@ -21,6 +22,13 @@ import PostComments from "./PostComments";
 const PostDetails = () => {
   const { postId } = useParams<{ postId: string }>();
   const { data, isLoading: isPostLoading } = useGetSinglePostQuery(postId);
+  const router = useRouter();
+  useEffect(() => {
+    if (!isPostLoading && !data) {
+      router.push("/404");
+    }
+  }, [isPostLoading, data, router]);
+
   const post = data?.data;
   const user = useSelector((state: RootState) => selectCurrentUser(state));
   const [addReactionToPost] = useAddReactionToPostMutation();
@@ -172,6 +180,7 @@ const PostDetails = () => {
                 <CiBookmarkPlus className="hover:text-primary duration-150 text-secondary/90" />
 
                 <PostDropdown
+                  postId={post?._id}
                   handleDownloadPdfFormat={handleDownloadPdfFormat}
                   isUser={isUser}
                 />
